@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ContainerTransport.Models
 {
 	internal class Container : BaseObject
 	{
-		public List<Box> ContainedBoxes { get; set; }
+		private List<Box> ContainedBoxes { get; set; }
 
 		public Container(Guid cGuid, float cWidth, float cHeight, float cDepth) : base(
 			cGuid, cWidth, cHeight, cDepth)
@@ -14,29 +15,31 @@ namespace ContainerTransport.Models
 			ContainedBoxes = new List<Box>();
 		}
 
+		public List<Box> GetContent()
+		{
+			return ContainedBoxes.ToList();
+		}
 		public bool CheckIfBoxFitsInContainer(Box box)
 		{
-			if (box.AvailableVolume < this.AvailableVolume)
-			{
-				return true;
-			}
-			return false;
+			return box.AvailableVolume < this.AvailableVolume;
+
 		}
 
 		public void AddBox(Box box)
 		{
-			this.AvailableVolume-= box.Volume;
+			AvailableVolume -= box.Volume;
+			ContainedBoxes.Add(box);
 		}
 
 		public void RemoveBox(Box box)
 		{
-			this.AvailableVolume += box.Volume;
+			AvailableVolume += box.Volume;
 		}
 
-		public void PrintInfoAboutFreeSpace()
+		public string GetInfoAboutFreeSpace()
 		{
-			Console.WriteLine($"Container has {this.AvailableVolume} cm3 of free space");
+			return $"Container has {this.AvailableVolume} cm3 of free space";
 		}
-	
-}
+
+	}
 }

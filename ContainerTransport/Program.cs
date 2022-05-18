@@ -17,7 +17,7 @@ namespace ContainerTransport
 			Console.ForegroundColor = ConsoleColor.Yellow;
 			foreach (var con in ListOfContainers)
 			{
-				Console.WriteLine(con.ContainedBoxes.Count);
+				Console.WriteLine(con.GetContent().Count);
 			}
 			Console.ResetColor();
 		}
@@ -26,7 +26,7 @@ namespace ContainerTransport
 		{
 			//var container = new Container(new Guid(), 100, 100, 100);
 			var container = GetRandomContainer();
-			container.PrintInfoAboutFreeSpace();
+			Console.WriteLine(container.GetInfoAboutFreeSpace());
 			ListOfContainers.Add(container);
 			for (int i = 0; i < remainingBoxes; i++)
 			{
@@ -48,7 +48,6 @@ namespace ContainerTransport
 					Console.WriteLine(box);
 					Console.ResetColor();
 					container.AddBox(box);
-					container.ContainedBoxes.Add(box);
 					inputBox = null;
 				}
 				else
@@ -63,7 +62,7 @@ namespace ContainerTransport
 					//ListOfContainers.Add(container);
 					break;
 				}
-				container.PrintInfoAboutFreeSpace();
+				Console.WriteLine(container.GetInfoAboutFreeSpace()); ;
 			}
 		}
 		public static int GetRandomInt(int min, int max)
