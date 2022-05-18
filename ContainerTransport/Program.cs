@@ -7,14 +7,14 @@ namespace ContainerTransport
 {
 	internal class Program
 	{
-		public const int AmountOfBoxes = 30;
+		public const int AmountOfBoxes = 4;
 		public static List<Box> ListOfBoxes = new List<Box>();
 		public static List<Container> ListOfContainers = new List<Container>();
 
 		static void Main(string[] args)
 		{
-			var container = GetRandomContainer();
-			//var container = new Container(new Guid(), 50, 50, 50);
+			//var container = GetRandomContainer();
+			var container = new Container(new Guid(), 100, 100, 100);
 			container.PrintInfoAboutFreeSpace();
 
 			AddBoxesIntoContainer(container, AmountOfBoxes);
@@ -30,7 +30,8 @@ namespace ContainerTransport
 		{
 			for (int i = 0; i < remainingBoxes; i++)
 			{
-				var box = GetRandomBox();
+				//var box = GetRandomBox();
+				var box = new Box(new Guid(), 70, 70, 70, 5);
 				ListOfBoxes.Add(box);
 				Console.WriteLine(box);
 				//Console.WriteLine(i);
@@ -42,7 +43,8 @@ namespace ContainerTransport
 				}
 				else
 				{
-					var newContainer = GetRandomContainer();
+					//var newContainer = GetRandomContainer();
+					var newContainer = new Container(new Guid(), 100, 100, 100);
 					Console.ForegroundColor = ConsoleColor.Red;
 					Console.WriteLine("container is full");
 					Console.ResetColor();
@@ -50,7 +52,6 @@ namespace ContainerTransport
 					AddBoxesIntoContainer(newContainer, remainingBoxes - i);
 					ListOfContainers.Add(newContainer);
 					break;
-
 				}
 				
 				container.PrintInfoAboutFreeSpace();

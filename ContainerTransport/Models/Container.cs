@@ -29,6 +29,11 @@ namespace ContainerTransport.Models
 			this.Volume -= box.Volume;
 		}
 
+		public void RemoveBox(Box box)
+		{
+			this.Volume += box.Volume;
+		}
+
 		public void PrintInfoAboutFreeSpace()
 		{
 			Console.WriteLine($"Container has {this.Volume} cm3 of free space");
