@@ -7,17 +7,13 @@ namespace ContainerTransport
 {
 	internal class Program
 	{
-		public const int AmountOfBoxes = 4;
+		public const int AmountOfBoxes = 100;
 		public static List<Box> ListOfBoxes = new List<Box>();
 		public static List<Container> ListOfContainers = new List<Container>();
 
 		static void Main(string[] args)
 		{
-			//var container = GetRandomContainer();
-			var container = new Container(new Guid(), 100, 100, 100);
-			container.PrintInfoAboutFreeSpace();
-
-			AddBoxesIntoContainer(container, AmountOfBoxes);
+			AddBoxesIntoContainer(AmountOfBoxes, null);
 			Console.ForegroundColor = ConsoleColor.Yellow;
 			foreach (var con in ListOfContainers)
 			{
@@ -26,37 +22,49 @@ namespace ContainerTransport
 			Console.ResetColor();
 		}
 
-		public static void AddBoxesIntoContainer(Container container, int remainingBoxes)
+		public static void AddBoxesIntoContainer(int remainingBoxes, Box inputBox)
 		{
+			//var container = new Container(new Guid(), 100, 100, 100);
+			var container = GetRandomContainer();
+			container.PrintInfoAboutFreeSpace();
+			ListOfContainers.Add(container);
 			for (int i = 0; i < remainingBoxes; i++)
 			{
-				//var box = GetRandomBox();
-				var box = new Box(new Guid(), 70, 70, 70, 5);
-				ListOfBoxes.Add(box);
-				Console.WriteLine(box);
-				//Console.WriteLine(i);
-				if (container.CheckIfBoxFitsInContainer(ListOfBoxes[i]))
+				Box box;
+				if (inputBox == null)
 				{
-					container.AddBox(box);
-					container.ContainedBoxes.Add(box);
-					
+					box = GetRandomBox();
+					//box = new Box(new Guid(), 70, 70, 70, 5);
 				}
 				else
 				{
-					//var newContainer = GetRandomContainer();
-					var newContainer = new Container(new Guid(), 100, 100, 100);
+					box = inputBox;
+				}
+				ListOfBoxes.Add(box);
+				Console.WriteLine(i);
+				if (container.CheckIfBoxFitsInContainer(ListOfBoxes[i]))
+				{
+					Console.ForegroundColor = ConsoleColor.Blue;
+					Console.WriteLine(box);
+					Console.ResetColor();
+					container.AddBox(box);
+					container.ContainedBoxes.Add(box);
+					inputBox = null;
+				}
+				else
+				{
+					//var newContainer = new Container(new Guid(), 100, 100, 100);
+					Console.WriteLine($"{box} CANNOT BE PLACED IN A CONTAINER!");
+					var remainedBox = box;
 					Console.ForegroundColor = ConsoleColor.Red;
 					Console.WriteLine("container is full");
 					Console.ResetColor();
-					ListOfContainers.Add(container);
-					AddBoxesIntoContainer(newContainer, remainingBoxes - i);
-					ListOfContainers.Add(newContainer);
+					AddBoxesIntoContainer(remainingBoxes - i, remainedBox);
+					//ListOfContainers.Add(container);
 					break;
 				}
-				
 				container.PrintInfoAboutFreeSpace();
 			}
-
 		}
 		public static int GetRandomInt(int min, int max)
 		{

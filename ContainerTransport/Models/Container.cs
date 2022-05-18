@@ -16,27 +16,26 @@ namespace ContainerTransport.Models
 
 		public bool CheckIfBoxFitsInContainer(Box box)
 		{
-			if (box.Volume < this.Volume)
+			if (box.AvailableVolume < this.AvailableVolume)
 			{
 				return true;
 			}
-
 			return false;
 		}
 
 		public void AddBox(Box box)
 		{
-			this.Volume -= box.Volume;
+			this.AvailableVolume-= box.Volume;
 		}
 
 		public void RemoveBox(Box box)
 		{
-			this.Volume += box.Volume;
+			this.AvailableVolume += box.Volume;
 		}
 
 		public void PrintInfoAboutFreeSpace()
 		{
-			Console.WriteLine($"Container has {this.Volume} cm3 of free space");
+			Console.WriteLine($"Container has {this.AvailableVolume} cm3 of free space");
 		}
 	
 }
