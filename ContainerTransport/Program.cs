@@ -2,23 +2,34 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using ContainerTransport.Models;
-
+using BetterConsoleTables;
 namespace ContainerTransport
 {
 	internal class Program
 	{
-		public const int AmountOfBoxes = 100;
+		public const int AmountOfBoxes = 600;
 		public static List<Box> ListOfBoxes = new List<Box>();
 		public static List<Container> ListOfContainers = new List<Container>();
 
 		static void Main(string[] args)
 		{
 			AddBoxesIntoContainer(AmountOfBoxes, null);
-			Console.ForegroundColor = ConsoleColor.Yellow;
+
+			Console.ForegroundColor = ConsoleColor.Green;
+			var table = new Table("index", "Container Guid", "Number Of Boxes", "Boxes Weighs");
+
+
+			table.Config = TableConfiguration.UnicodeAlt();
+
+			int i = 1;
 			foreach (var con in ListOfContainers)
 			{
-				Console.WriteLine(con.GetContent().Count);
+
+				table.AddRow($"{i}", $"{con.Guid}", $"{con.GetContent().Count}", $"{con.Weight} kg");
+				i++;
+				
 			}
+			Console.Write(table.ToString());
 			Console.ResetColor();
 		}
 
@@ -48,12 +59,13 @@ namespace ContainerTransport
 					Console.WriteLine(box);
 					Console.ResetColor();
 					container.AddBox(box);
+					container.AddBoxesWeight(box);
 					inputBox = null;
 				}
 				else
 				{
 					//var newContainer = new Container(new Guid(), 100, 100, 100);
-					Console.WriteLine($"{box} CANNOT BE PLACED IN A CONTAINER!");
+					Console.WriteLine(box.GetfailureinfoAbotBox());
 					var remainedBox = box;
 					Console.ForegroundColor = ConsoleColor.Red;
 					Console.WriteLine("container is full");
@@ -62,9 +74,15 @@ namespace ContainerTransport
 					//ListOfContainers.Add(container);
 					break;
 				}
-				Console.WriteLine(container.GetInfoAboutFreeSpace()); ;
+				Console.WriteLine(container.GetInfoAboutFreeSpace());
 			}
 		}
+
+		/*public int GetLongestContainer(Container container)
+		{
+			int max = 0;
+			int NumberOfIndexes = container.Guid.Count;
+		}*/
 		public static int GetRandomInt(int min, int max)
 		{
 			Random rnd = new Random();
@@ -77,8 +95,9 @@ namespace ContainerTransport
 			int width = GetRandomInt(200, 500);
 			int height = GetRandomInt(200, 500);
 			int depth = GetRandomInt(200, 500);
+			int weight = 0;
 			Guid guid = Guid.NewGuid();
-			return new Container(guid, width, height, depth);
+			return new Container(guid, width, height, depth, weight);
 		}
 		public static Box GetRandomBox()
 		{

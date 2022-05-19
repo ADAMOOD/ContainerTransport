@@ -9,8 +9,8 @@ namespace ContainerTransport.Models
 	{
 		private List<Box> ContainedBoxes { get; set; }
 
-		public Container(Guid cGuid, float cWidth, float cHeight, float cDepth) : base(
-			cGuid, cWidth, cHeight, cDepth)
+		public Container(Guid cGuid, float cWidth, float cHeight, float cDepth,float weight) : base(
+			cGuid, cWidth, cHeight, cDepth,weight)
 		{
 			ContainedBoxes = new List<Box>();
 		}
@@ -31,15 +31,22 @@ namespace ContainerTransport.Models
 			ContainedBoxes.Add(box);
 		}
 
-		public void RemoveBox(Box box)
+		public void RemoveBox(Box box,int index)
 		{
 			AvailableVolume += box.Volume;
+			ContainedBoxes.RemoveAt(index);
 		}
 
 		public string GetInfoAboutFreeSpace()
 		{
 			return $"Container has {this.AvailableVolume} cm3 of free space";
 		}
+
+		public void AddBoxesWeight(Box box)
+		{
+			this.Weight += box.Weight;
+		}
+
 
 	}
 }
