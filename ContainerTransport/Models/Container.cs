@@ -7,12 +7,37 @@ namespace ContainerTransport.Models
 {
 	internal class Container : BaseObject
 	{
+		List<IDNumber> IDs = new List<IDNumber>();
 		private List<Box> ContainedBoxes { get; set; }
+		public float AvailableVolume { get; protected set; }
+		public IDNumber IdNumber { get; protected set; }
 
-		public Container(Guid cGuid, float cWidth, float cHeight, float cDepth,float weight) : base(
-			cGuid, cWidth, cHeight, cDepth,weight)
+		public Container(Guid cGuid, float cWidth, float cHeight, float cDepth, float weight) : base(
+			cGuid, cWidth, cHeight, cDepth, weight)
 		{
 			ContainedBoxes = new List<Box>();
+			AvailableVolume = Volume;
+			IdNumber = GetIdNumber(null);
+		}
+
+		public IDNumber GetIdNumber(IDNumber id)
+		{
+			if (id == null)
+			{
+				id = new IDNumber();
+			}
+			if (CheckIfIdExists(id))
+			{
+				id = new IDNumber();
+				Console.WriteLine("hroch");
+			}
+			IDs.Add(id);
+			return id;
+		}
+
+		private bool CheckIfIdExists(IDNumber id)
+		{
+			return (IDs.Contains(id));
 		}
 
 		public List<Box> GetContent()
@@ -21,20 +46,35 @@ namespace ContainerTransport.Models
 		}
 		public bool CheckIfBoxFitsInContainer(Box box)
 		{
-			return box.AvailableVolume < this.AvailableVolume;
-
+			return box.Volume < this.AvailableVolume;
 		}
 
-		public void AddBox(Box box)
+		public bool AddBox(Box box)
 		{
-			AvailableVolume -= box.Volume;
-			ContainedBoxes.Add(box);
+			if (this.AvailableVolume > box.Volume)
+			{
+				AvailableVolume -= box.Volume;
+				ContainedBoxes.Add(box);
+				return true;
+			}
+			return false;
 		}
 
-		public void RemoveBox(Box box,int index)
+		public bool RemoveBox(Box box)
 		{
+			if (!ContainedBoxes.Contains(box))
+				return false;
+
 			AvailableVolume += box.Volume;
-			ContainedBoxes.RemoveAt(index);
+			ContainedBoxes.Remove(box);
+			return true;
+
+
+		}
+
+		public string GetIDNumber()
+		{
+			return $"{Program.GetRandomInt(1, 9)}-{Program.GetRandomInt(1, 9)}{Program.GetRandomInt(1, 9)})";
 		}
 
 		public string GetInfoAboutFreeSpace()

@@ -4,10 +4,10 @@ using System.Globalization;
 using ContainerTransport.Models;
 using BetterConsoleTables;
 namespace ContainerTransport
-{
+{ 
 	internal class Program
 	{
-		public const int AmountOfBoxes = 600;
+		public const int AmountOfBoxes = 1000;
 		public static List<Box> ListOfBoxes = new List<Box>();
 		public static List<Container> ListOfContainers = new List<Container>();
 
@@ -16,16 +16,14 @@ namespace ContainerTransport
 			AddBoxesIntoContainer(AmountOfBoxes, null);
 
 			Console.ForegroundColor = ConsoleColor.Green;
-			var table = new Table("index", "Container Guid", "Number Of Boxes", "Boxes Weighs");
-
-
+			var table = new Table("index","Generated Id", "Container Guid", "Number Of Boxes", "Boxes Weighs");
 			table.Config = TableConfiguration.UnicodeAlt();
 
 			int i = 1;
 			foreach (var con in ListOfContainers)
 			{
 
-				table.AddRow($"{i}", $"{con.Guid}", $"{con.GetContent().Count}", $"{con.Weight} kg");
+				table.AddRow($"{i}",$"{con.IdNumber.IdNumber}", $"{con.Guid}", $"{con.GetContent().Count}", $"{con.Weight} kg");
 				i++;
 				
 			}
