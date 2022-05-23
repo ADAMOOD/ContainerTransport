@@ -10,8 +10,8 @@ namespace ContainerTransport.Models
 		public float Depth { get; }
 		public float Volume { get; }
 		public float Weight { get; set; }
-		
-		public BaseObject(Guid boxGuid, float width, float height, float depth,float weight)
+
+		public BaseObject(Guid boxGuid, float width, float height, float depth, float weight)
 		{
 			Guid = boxGuid;
 			Width = width;
@@ -19,7 +19,7 @@ namespace ContainerTransport.Models
 			Height = height;
 			Depth = depth;
 			Weight = weight;
-			  Volume = height * width * depth;
+			Volume = height * width * depth;
 
 		}
 	}

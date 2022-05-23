@@ -5,7 +5,8 @@ namespace ContainerTransport.Models
 {
 	public class Ship
 	{
-		public List<Container> containersInside { get; set; }
+		public List<Container> containersInside { get; }
+		// jemno public string name	{}
 
 		public Ship()
 		{

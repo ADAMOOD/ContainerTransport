@@ -10,7 +10,7 @@ namespace ContainerTransport.Models
 		List<IDNumber> IDs = new List<IDNumber>();
 		private List<Box> ContainedBoxes { get; set; }
 		public float AvailableVolume { get; protected set; }
-		public IDNumber IdNumber { get; protected set; }
+		public IDNumber IdNumber { get; }
 
 		public Container(Guid cGuid, float cWidth, float cHeight, float cDepth, float weight) : base(
 			cGuid, cWidth, cHeight, cDepth, weight)

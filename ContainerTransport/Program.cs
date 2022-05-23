@@ -17,8 +17,6 @@ namespace ContainerTransport
 		{
 			AddBoxesIntoContainer(AmountOfBoxes, null);
 			var port = new Port(AmountOfShips);
-			Console.WriteLine(port.Distances[0]);
-			Console.WriteLine(port.Distances[1]);
 			port.AddShips();
 			Console.ForegroundColor = ConsoleColor.Green;
 			var table = new Table("index", "Generated Id", "Container Guid", "Number Of Boxes", "Boxes Weighs");
