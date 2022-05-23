@@ -73,7 +73,7 @@ namespace ContainerTransport.Models
 
 		public string GetIDNumber()
 		{
-			return $"{Program.GetRandomInt(1, 9)}-{Program.GetRandomInt(1, 9)}{Program.GetRandomInt(1, 9)})";
+			return $"{Helpers.GetRandomInt(1, 9)}-{Helpers.GetRandomInt(1, 9)}{Helpers.GetRandomInt(1, 9)})";
 		}
 
 		public string GetInfoAboutFreeSpace()

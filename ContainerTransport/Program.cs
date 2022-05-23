@@ -8,16 +8,69 @@ namespace ContainerTransport
 	internal class Program
 	{
 		public const int AmountOfBoxes = 1000;
+		public const string EnteringText = "WELCOME TO THIS [CONTAINERS-BOXES-SHIPS-AND-STUF] APLICATION";
 		public const int AmountOfShips = 3;
 		public static List<Box> ListOfBoxes = new List<Box>();
 		public static List<Container> ListOfContainers = new List<Container>();
-
-
 		static void Main(string[] args)
 		{
+			Console.SetCursorPosition((Console.WindowWidth - EnteringText.Length) / 2, Console.CursorTop);
+			Console.WriteLine(EnteringText);
 			AddBoxesIntoContainer(AmountOfBoxes, null);
 			var port = new Port(AmountOfShips);
 			port.AddShips();
+			Console.WriteLine("'1'->Print Containers Table\n'2'->Moving Containers Between Ships\n'3'->Land container\n'4'->Exit Application");
+
+
+			ContainersToRandomShipPlacement(port);
+		
+			while (true)
+			{
+				char choice = Console.ReadKey().KeyChar;
+				Helpers.ClearCurrentConsoleLine(6);
+
+				Console.WriteLine();
+				switch (choice)
+				{
+					case '1':
+						{
+							CreateAdnPrintTableAboutContainers();
+							break;
+						}
+					case '2':
+						{
+							Console.WriteLine("Give me an ID of container");
+							string id = Console.ReadLine();
+							Console.WriteLine($"Give me name of Ship you wanna container {id} move into ");
+							string shipName = Console.ReadLine();
+							break;
+						}
+					case '3':
+						{
+							break;
+						}
+					case '4':
+						{
+							Environment.Exit(1);
+							break;
+						}
+				}
+
+			}
+
+		}
+
+		private static void ContainersToRandomShipPlacement(Port port)
+		{
+			foreach (var container in ListOfContainers)
+			{
+				int index = Helpers.GetRandomInt(0, AmountOfShips);
+				port.Ships[index].AddContainer(container);
+			}
+		}
+
+		private static void CreateAdnPrintTableAboutContainers()
+		{
 			Console.ForegroundColor = ConsoleColor.Green;
 			var table = new Table("index", "Generated Id", "Container Guid", "Number Of Boxes", "Boxes Weighs");
 			table.Config = TableConfiguration.UnicodeAlt();
@@ -25,23 +78,18 @@ namespace ContainerTransport
 			int i = 1;
 			foreach (var con in ListOfContainers)
 			{
-				port.Ships[0].AddContainer(con);
-				table.AddRow($"{i}", $"{con.IdNumber.IdNumber}", $"{con.Guid}", $"{con.GetContent().Count}", $"{con.Weight} kg");
+				table.AddRow($"{i}", $"{con.IdNumber.IdNumber}", $"{con.Guid}", $"{con.GetContent().Count}",
+					$"{con.Weight} kg");
 				i++;
-
-
 			}
+
 			Console.Write(table.ToString());
 			Console.ResetColor();
-			port.PrintInfoAbotContainers();
-			port.MoveContainer(0, 0, 2);
-			port.PrintInfoAbotContainers();
 		}
 
 		public static void AddBoxesIntoContainer(int remainingBoxes, Box inputBox)
 		{
 			var container = GetRandomContainer();
-			//	Console.WriteLine(container.GetInfoAboutFreeSpace());
 			ListOfContainers.Add(container);
 			for (int i = 0; i < remainingBoxes; i++)
 			{
@@ -56,11 +104,9 @@ namespace ContainerTransport
 					box = inputBox;
 				}
 				ListOfBoxes.Add(box);
-				//Console.WriteLine(i);
 				if (container.CheckIfBoxFitsInContainer(ListOfBoxes[i]))
 				{
 					Console.ForegroundColor = ConsoleColor.Blue;
-					//Console.WriteLine(box);
 					Console.ResetColor();
 					container.AddBox(box);
 					container.AddBoxesWeight(box);
@@ -68,41 +114,29 @@ namespace ContainerTransport
 				}
 				else
 				{
-					//Console.WriteLine(box.GetfailureinfoAbotBox());
 					var remainedBox = box;
 					Console.ForegroundColor = ConsoleColor.Red;
-					//Console.WriteLine("container is full");
 					Console.ResetColor();
 					AddBoxesIntoContainer(remainingBoxes - i, remainedBox);
 					break;
 				}
-				//Console.WriteLine(container.GetInfoAboutFreeSpace());
 			}
 		}
-
-
-		public static int GetRandomInt(int min, int max)
-		{
-			Random rnd = new Random();
-			int num = rnd.Next(min, max);
-			return num;
-		}
-
 		public static Container GetRandomContainer()
 		{
-			int width = GetRandomInt(200, 500);
-			int height = GetRandomInt(200, 500);
-			int depth = GetRandomInt(200, 500);
+			int width = Helpers.GetRandomInt(200, 500);
+			int height = Helpers.GetRandomInt(200, 500);
+			int depth = Helpers.GetRandomInt(200, 500);
 			int weight = 0;
 			Guid guid = Guid.NewGuid();
 			return new Container(guid, width, height, depth, weight);
 		}
 		public static Box GetRandomBox()
 		{
-			int width = GetRandomInt(50, 150);
-			int height = GetRandomInt(50, 150);
-			int depth = GetRandomInt(50, 150);
-			int weight = GetRandomInt(1, 20);
+			int width = Helpers.GetRandomInt(50, 150);
+			int height = Helpers.GetRandomInt(50, 150);
+			int depth = Helpers.GetRandomInt(50, 150);
+			int weight = Helpers.GetRandomInt(1, 20);
 			Guid guid = Guid.NewGuid();
 			return new Box(guid, width, height, depth, weight);
 		}

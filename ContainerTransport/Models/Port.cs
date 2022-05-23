@@ -19,16 +19,16 @@ namespace ContainerTransport.Models
 			int i = 0;
 			foreach (var ship in Ships)
 			{
-				/*var ShipTable = new Table("ship","container","number of Containers");
+				var ShipTable = new Table("ship","container","number of Containers");
 				ShipTable.Config = TableConfiguration.UnicodeAlt();
 				ShipTable.AddRow($"{Ships[i]}", $"{Ships[i].containersInside}");
 				foreach (var con in Ships[i].containersInside)
 				{
 					ShipTable.AddRow( $"{con.IdNumber.IdNumber}");
-				}*/
-				Console.WriteLine($"ship {i} has {ship.containersInside.Count} containers");
+				}
+				//Console.WriteLine($"ship {i} has {ship.containersInside.Count} containers");
 				i++;
-				//Console.Write(ShipTable);
+				Console.Write(ShipTable);
 			}
 		}
 		public Port(int amountOfShips)
@@ -49,7 +49,7 @@ namespace ContainerTransport.Models
 			Distances = new int[AmountOfShips - 1];
 			for (int i = 0; i < Distances.Length; i++)
 			{
-				Distances[i] = Program.GetRandomInt(100, 451);
+				Distances[i] = Helpers.GetRandomInt(100, 451);
 			}
 			return Distances;
 		}

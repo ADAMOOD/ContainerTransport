@@ -12,9 +12,9 @@ namespace ContainerTransport.Models
 
 		public IDNumber()
 		{
-			FirstNumber = Program.GetRandomInt(0,10);
-			SecondNumber = Program.GetRandomInt(0,10);
-			ThirdNumber = Program.GetRandomInt(0,10);
+			FirstNumber = Helpers.GetRandomInt(0,10);
+			SecondNumber = Helpers.GetRandomInt(0,10);
+			ThirdNumber = Helpers.GetRandomInt(0,10);
 			IdNumber = $"{FirstNumber}-{SecondNumber}{ThirdNumber}";
 		}
 	
