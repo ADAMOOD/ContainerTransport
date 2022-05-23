@@ -4,38 +4,46 @@ using System.Globalization;
 using ContainerTransport.Models;
 using BetterConsoleTables;
 namespace ContainerTransport
-{ 
+{
 	internal class Program
 	{
 		public const int AmountOfBoxes = 1000;
+		public const int AmountOfShips = 3;
 		public static List<Box> ListOfBoxes = new List<Box>();
 		public static List<Container> ListOfContainers = new List<Container>();
+
 
 		static void Main(string[] args)
 		{
 			AddBoxesIntoContainer(AmountOfBoxes, null);
-
+			var port = new Port(AmountOfShips);
+			Console.WriteLine(port.Distances[0]);
+			Console.WriteLine(port.Distances[1]);
+			port.AddShips();
 			Console.ForegroundColor = ConsoleColor.Green;
-			var table = new Table("index","Generated Id", "Container Guid", "Number Of Boxes", "Boxes Weighs");
+			var table = new Table("index", "Generated Id", "Container Guid", "Number Of Boxes", "Boxes Weighs");
 			table.Config = TableConfiguration.UnicodeAlt();
 
 			int i = 1;
 			foreach (var con in ListOfContainers)
 			{
-
-				table.AddRow($"{i}",$"{con.IdNumber.IdNumber}", $"{con.Guid}", $"{con.GetContent().Count}", $"{con.Weight} kg");
+				port.Ships[0].AddContainer(con);
+				table.AddRow($"{i}", $"{con.IdNumber.IdNumber}", $"{con.Guid}", $"{con.GetContent().Count}", $"{con.Weight} kg");
 				i++;
-				
+
+
 			}
 			Console.Write(table.ToString());
 			Console.ResetColor();
+			port.PrintInfoAbotContainers();
+			port.MoveContainer(0, 0, 2);
+			port.PrintInfoAbotContainers();
 		}
 
 		public static void AddBoxesIntoContainer(int remainingBoxes, Box inputBox)
 		{
-			//var container = new Container(new Guid(), 100, 100, 100);
 			var container = GetRandomContainer();
-			Console.WriteLine(container.GetInfoAboutFreeSpace());
+			//	Console.WriteLine(container.GetInfoAboutFreeSpace());
 			ListOfContainers.Add(container);
 			for (int i = 0; i < remainingBoxes; i++)
 			{
@@ -43,18 +51,18 @@ namespace ContainerTransport
 				if (inputBox == null)
 				{
 					box = GetRandomBox();
-					//box = new Box(new Guid(), 70, 70, 70, 5);
+
 				}
 				else
 				{
 					box = inputBox;
 				}
 				ListOfBoxes.Add(box);
-				Console.WriteLine(i);
+				//Console.WriteLine(i);
 				if (container.CheckIfBoxFitsInContainer(ListOfBoxes[i]))
 				{
 					Console.ForegroundColor = ConsoleColor.Blue;
-					Console.WriteLine(box);
+					//Console.WriteLine(box);
 					Console.ResetColor();
 					container.AddBox(box);
 					container.AddBoxesWeight(box);
@@ -62,25 +70,19 @@ namespace ContainerTransport
 				}
 				else
 				{
-					//var newContainer = new Container(new Guid(), 100, 100, 100);
-					Console.WriteLine(box.GetfailureinfoAbotBox());
+					//Console.WriteLine(box.GetfailureinfoAbotBox());
 					var remainedBox = box;
 					Console.ForegroundColor = ConsoleColor.Red;
-					Console.WriteLine("container is full");
+					//Console.WriteLine("container is full");
 					Console.ResetColor();
 					AddBoxesIntoContainer(remainingBoxes - i, remainedBox);
-					//ListOfContainers.Add(container);
 					break;
 				}
-				Console.WriteLine(container.GetInfoAboutFreeSpace());
+				//Console.WriteLine(container.GetInfoAboutFreeSpace());
 			}
 		}
 
-		/*public int GetLongestContainer(Container container)
-		{
-			int max = 0;
-			int NumberOfIndexes = container.Guid.Count;
-		}*/
+
 		public static int GetRandomInt(int min, int max)
 		{
 			Random rnd = new Random();

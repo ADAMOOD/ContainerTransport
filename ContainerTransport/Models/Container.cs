@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ContainerTransport.Models
 {
-	internal class Container : BaseObject
+	public  class Container : BaseObject
 	{
 		List<IDNumber> IDs = new List<IDNumber>();
 		private List<Box> ContainedBoxes { get; set; }
@@ -29,7 +29,6 @@ namespace ContainerTransport.Models
 			if (CheckIfIdExists(id))
 			{
 				id = new IDNumber();
-				Console.WriteLine("hroch");
 			}
 			IDs.Add(id);
 			return id;
