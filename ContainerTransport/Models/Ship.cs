@@ -10,7 +10,7 @@ namespace ContainerTransport.Models
 	public List<Container> containersInside { get; }
 	//public string ShipName { get; set; }
 
-		public Ship(string name)
+		public Ship()
 		{
 			//ShipName = name;
 			containersInside=new List<Container>();

@@ -13,35 +13,59 @@ namespace ContainerTransport.Models
 		public static int AmountOfShips { get; set; }
 		public int[] Distances { get; set; }
 		public List<Ship> Ships { get; }
+		public Dictionary<int, Ship> ParkingPlace { get; set; }
 
-		public void PrintInfoAbotContainers()
-		{
-			int i = 0;
-			foreach (var ship in Ships)
-			{
-				var ShipTable = new Table("ship","container","number of Containers");
-				ShipTable.Config = TableConfiguration.UnicodeAlt();
-				ShipTable.AddRow($"{Ships[i]}", $"{Ships[i].containersInside}");
-				foreach (var con in Ships[i].containersInside)
-				{
-					ShipTable.AddRow( $"{con.IdNumber.IdNumber}");
-				}
-				//Console.WriteLine($"ship {i} has {ship.containersInside.Count} containers");
-				i++;
-				Console.Write(ShipTable);
-			}
-		}
 		public Port(int amountOfShips)
 		{
 			AmountOfShips = amountOfShips;
 			Ships = new List<Ship>();
 			Distances = GetDistances();
+			ParkingPlace = new Dictionary<int, Ship>();
 		}
+		public void PrintInfoAboutContainers()
+		{
+			var ShipTable = new Table("Parking place", "Ship", "number of Containers");
+			ShipTable.Config = TableConfiguration.UnicodeAlt();
+			foreach (var item in ParkingPlace)
+			{
+				ShipTable.AddRow($"{item.Key}", $"{item.Value}", $"{item.Value.containersInside.Count}");
+			}
+			Console.Write(ShipTable);
+
+		}
+
+		/*public static int GetRandomShipKey()
+		{
+			Random random = new Random();
+			int key = random.Next()
+		}
+		*/
 
 		public void AddShips()
 		{
 			for (int i = 0; i < AmountOfShips; i++)
-				Ships.Add(new Ship());
+			{
+				int random = GetRandomParkingPlaceKey();
+				var ship = new Ship();
+				ParkingPlace.Add(random, ship);
+				Ships.Add(ship);
+			}
+		}
+		public static void ContainersToRandomShipPlacement(Port port)
+		{
+			foreach (var container in Program.ListOfContainers)
+			{
+				//port.ParkingPlace.Values
+			}
+		}
+		public int GetRandomParkingPlaceKey()
+		{
+			int random = Helpers.GetRandomInt(0, 11);
+			if (ParkingPlace.ContainsKey(random))
+			{
+				GetRandomParkingPlaceKey();
+			}
+			return random;
 		}
 
 		public int[] GetDistances()
@@ -59,12 +83,12 @@ namespace ContainerTransport.Models
 		//1.vypsani všech kontejneru
 		//2. presouvani kontejneru
 		//3. vylodeni kontejneru
-		public void MoveContainer(int container, int from, int to)
+		public void MoveContainer(IDNumber id, int from, int to)
 		{
-			Console.WriteLine($"Moving container {container} from ship {from} to ship {to}");
+			Console.WriteLine($"Moving container {id.IdNumber} from ship {from} to ship {to}");
 			MovingContainerSleeping(from, to);
-			Ships[from].containersInside.Remove(Ships[from].containersInside[container]);
-			Ships[to].AddContainer(Ships[from].containersInside[container]);
+			//	Ships[from].containersInside.Remove(Ships[from].containersInside[id.IdNumber]);
+			//Ships[to].AddContainer(Ships[from].containersInside[container]);
 		}
 
 		public void MovingContainerSleeping(int ship1, int ship2)

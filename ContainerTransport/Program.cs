@@ -20,10 +20,7 @@ namespace ContainerTransport
 			var port = new Port(AmountOfShips);
 			port.AddShips();
 			Console.WriteLine("'1'->Print Containers Table\n'2'->Moving Containers Between Ships\n'3'->Land container\n'4'->Exit Application");
-
-
 			ContainersToRandomShipPlacement(port);
-		
 			while (true)
 			{
 				char choice = Console.ReadKey().KeyChar;
@@ -34,7 +31,8 @@ namespace ContainerTransport
 				{
 					case '1':
 						{
-							CreateAdnPrintTableAboutContainers();
+							//CreateAdnPrintTableAboutContainers();
+								port.PrintInfoAboutContainers();
 							break;
 						}
 					case '2':
@@ -60,13 +58,17 @@ namespace ContainerTransport
 
 		}
 
-		private static void ContainersToRandomShipPlacement(Port port)
+		public static void ContainersToRandomShipPlacement(Port port)
 		{
-			foreach (var container in ListOfContainers)
+			foreach (var container in Program.ListOfContainers)
 			{
-				int index = Helpers.GetRandomInt(0, AmountOfShips);
-				port.Ships[index].AddContainer(container);
+				port.ParkingPlace[GetRandomShipKey(port)].containersInside.Add(container);
 			}
+		}
+		public static int GetRandomShipKey(Port port)
+		{
+			Random random = new Random();
+			return random.Next(port.ParkingPlace.Keys.Count);
 		}
 
 		private static void CreateAdnPrintTableAboutContainers()
