@@ -31,8 +31,16 @@ namespace ContainerTransport
 				{
 					case '1':
 						{
+							Console.ForegroundColor = ConsoleColor.Green;
+							Console.WriteLine("Containers:");
 							CreateAdnPrintTableAboutContainers();
-							port.PrintInfoAboutContainers();
+							Console.ForegroundColor = ConsoleColor.Red;
+							Console.WriteLine("Ships:");
+							port.PrintInfoAboutShips();
+							Console.ForegroundColor = ConsoleColor.Yellow;
+							Console.WriteLine("Dock:");
+							port.PrintInfoAboutDock();
+							Console.ResetColor();
 							break;
 						}
 					case '2':
@@ -42,7 +50,7 @@ namespace ContainerTransport
 							var id = new IDNumber(input);
 							Console.WriteLine($"Give me name of Ship you wanna container {id.IdNumber} move into ");
 							string shipName = Console.ReadLine();
-							port.MovingContainersBetweenShips(id,shipName);
+							port.MovingContainersBetweenShips(id, shipName);
 							break;
 						}
 					case '3':
@@ -50,7 +58,7 @@ namespace ContainerTransport
 							Console.WriteLine("Give me an ID of container");
 							string input = Console.ReadLine();
 							var id = new IDNumber(input);
-							port.MoveContainerOnLand(id);
+							Console.WriteLine(port.MoveContainerOnLand(id));
 							break;
 						}
 					case '4':
@@ -70,7 +78,7 @@ namespace ContainerTransport
 			{
 				int random = port.GetRandomParkingPlaceKey();
 				var ship = new Ship();
-				port.AddShip(ship,random);
+				port.AddShip(ship, random);
 
 			}
 		}
@@ -86,20 +94,19 @@ namespace ContainerTransport
 
 		private static void CreateAdnPrintTableAboutContainers()
 		{
-			Console.ForegroundColor = ConsoleColor.Green;
-			var table = new Table("index", "Generated Id", "Container Guid", "Number Of Boxes", "Boxes Weighs");
+			
+			var table = new Table("index", "Generated Id", "Container Guid", "Number Of Boxes", "Boxes Weighs", "Status");
 			table.Config = TableConfiguration.UnicodeAlt();
 
 			int i = 1;
 			foreach (var con in ListOfContainers)
 			{
-				table.AddRow($"{i}", $"{con.IdNumber.IdNumber}", $"{con.Guid}", $"{con.GetContent().Count}",
-					$"{con.Weight} kg");
+				table.AddRow($"{i}", $"{con.Id.IdNumber}", $"{con.Guid}", $"{con.GetContent().Count}",
+					$"{con.Weight} kg", $"{con.Status}");
 				i++;
 			}
-
 			Console.Write(table.ToString());
-			Console.ResetColor();
+			
 		}
 
 		public static void AddBoxesIntoContainer(int remainingBoxes, Box inputBox)
@@ -144,7 +151,7 @@ namespace ContainerTransport
 			int depth = Helpers.GetRandomInt(200, 500);
 			int weight = 0;
 			Guid guid = Guid.NewGuid();
-			return new Container(guid, width, height, depth, weight);
+			return new Container(guid, width, height, depth, weight, status.ship);
 		}
 		public static Box GetRandomBox()
 		{

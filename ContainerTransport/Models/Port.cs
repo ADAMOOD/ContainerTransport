@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading;
 using BetterConsoleTables;
+using Microsoft.VisualBasic;
 
 namespace ContainerTransport.Models
 {
@@ -25,7 +26,7 @@ namespace ContainerTransport.Models
 			ParkingPlace = new Dictionary<int, Ship>();
 			Dock = new List<Container>();
 		}
-		public void PrintInfoAboutContainers()
+		public void PrintInfoAboutShips()
 		{
 			var ShipTable = new Table("Parking place", "Ship", "Number of Containers");
 			ShipTable.Config = TableConfiguration.UnicodeAlt();
@@ -35,6 +36,17 @@ namespace ContainerTransport.Models
 			}
 			Console.Write(ShipTable);
 
+		}
+
+		public void PrintInfoAboutDock()
+		{
+			var DockTable = new Table("Container ID", "Status ");
+			DockTable.Config = TableConfiguration.UnicodeAlt();
+			foreach (var container in Dock)
+			{
+				DockTable.AddRow($"{container.Id.IdNumber}", $"{container.Status}");
+			}
+			Console.Write(DockTable);
 		}
 
 		public int GetRandomShipKey()
@@ -48,6 +60,7 @@ namespace ContainerTransport.Models
 			ParkingPlace.Add(place, ship);
 			Ships.Add(ship);
 		}
+
 
 
 		public int GetRandomParkingPlaceKey()
@@ -73,46 +86,72 @@ namespace ContainerTransport.Models
 			return Distances;
 		}
 
-		//Dostaneš jenom ID
-		//user input
-		//1.vypsani všech kontejneru
-		//2. presouvani kontejneru
-		//3. vylodeni kontejneru
 		public void MovingContainersBetweenShips(IDNumber idContainer, string shipName)
 		{
 			if (CheckIfIdExist(idContainer))
 			{
 				throw new ArgumentOutOfRangeException(nameof(idContainer), "Does not exists");
 			}
-			if (CheckIfShipNameExist(shipName))
+			if (!CheckIfShipNameExist(shipName))
 			{
 				throw new ArgumentOutOfRangeException(nameof(shipName), "Does not exists");
 			}
-		
-	}
-		public void MoveContainerOnLand(IDNumber id)
+			var container = findContainer(idContainer);
+			var ship = FindShip(shipName);
+			var OriginalShip = FindShipUsingContainer(container);
+			OriginalShip.containersInside.Remove(container);
+			ship.AddContainer(container);
+
+		}
+		public Ship FindShipUsingContainer(Container container)
 		{
-			if (CheckIfIdExist(id))
+			foreach (var ship in Ships)
+			{
+				foreach (var con in ship.containersInside)
+				{
+					if (con.Equals(container))
+						return ship;
+				}
+			}
+			return null;
+		}
+		public string MoveContainerOnLand(IDNumber id)
+		{
+			if (CheckIfIdExist(id))//nejak nefunguje
 			{
 				throw new ArgumentOutOfRangeException(nameof(id), "Does not exists");
 			}
 
-			var container = getContainer(id);
+			var container = findContainer(id);
+			if (container == null)
+				return "chyba";
+			container.Status = status.dock;
 			Dock.Add(container);
+			return $"{container.Id.IdNumber} has been succesfuly moved to Dock";
 		}
 
-		private Container getContainer(IDNumber id)
+		public Ship FindShip(string name)
+		{
+			foreach (var ship in Ships)
+			{
+				if (ship.ShipName.Equals(name))
+					return ship;
+			}
+
+			return null;
+		}
+		private Container findContainer(IDNumber id)
 		{
 			foreach (var ship in Ships)
 			{
 				foreach (var container in ship.containersInside)
 				{
-					if (container.IdNumber.IdNumber.Equals(id))
+
+					if (container.Id.IdNumber.Equals(id.IdNumber))
 					{
 						ship.containersInside.Remove(container);
 						return container;
 					}
-						
 				}
 			}
 			return null;
@@ -126,14 +165,6 @@ namespace ContainerTransport.Models
 		private bool CheckIfIdExist(IDNumber id)
 		{
 			return Container.IDs.Contains(id);
-		}
-
-		public void MoveContainer(IDNumber id, int to)
-		{
-			//Console.WriteLine($"Moving container {id.IdNumber} from ship {from} to ship {to}");
-			//	MovingContainerSleeping(from, to);
-			//	Ships[from].containersInside.Remove(Ships[from].containersInside[id.IdNumber]);
-			//Ships[to].AddContainer(Ships[from].containersInside[container]);
 		}
 
 		public int CalculateDistanceBetweenPlaces(int from, int to)
@@ -150,14 +181,14 @@ namespace ContainerTransport.Models
 			int distance = 0;
 			if (from > to)
 			{
-				for (int i = from ; i >= to; i--)
+				for (int i = from; i >= to; i--)
 				{
 					distance += Distances[i];
 				}
 			}
 			else
 			{
-				for (int i = from ; i < to; i++)
+				for (int i = from; i < to; i++)
 				{
 					distance += Distances[i];
 				}

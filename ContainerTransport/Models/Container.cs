@@ -5,20 +5,26 @@ using System.Text;
 
 namespace ContainerTransport.Models
 {
+	public enum status
+	{
+		ship,
+		dock
+	}
 	public  class Container : BaseObject
 	{
 		public static List<IDNumber> IDs = new List<IDNumber>();
 		private List<Box> ContainedBoxes { get; set; }
 		public float AvailableVolume { get; protected set; }
-		public IDNumber IdNumber { get; }
+		public IDNumber Id { get; }
+		public status Status { get; set; }
 
-		public Container(Guid cGuid, float cWidth, float cHeight, float cDepth, float weight) : base(
+		public Container(Guid cGuid, float cWidth, float cHeight, float cDepth, float weight,status status) : base(
 			cGuid, cWidth, cHeight, cDepth, weight)
 		{
 			ContainedBoxes = new List<Box>();
 			AvailableVolume = Volume;
-			IdNumber = GetIdNumber(null);
-			
+			Id = GetIdNumber(null);
+			Status=status;
 		}
 
 		public IDNumber GetIdNumber(IDNumber id)
