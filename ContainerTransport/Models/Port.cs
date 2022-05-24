@@ -22,7 +22,7 @@ namespace ContainerTransport.Models
 			AmountOfPlaces = amountOfPlaces;
 			Ships = new List<Ship>();
 			Distances = GetDistances();
-				ParkingPlace = new Dictionary<int, Ship>();
+			ParkingPlace = new Dictionary<int, Ship>();
 			Dock = new List<Container>();
 		}
 		public void PrintInfoAboutContainers()
@@ -43,22 +43,18 @@ namespace ContainerTransport.Models
 			return ParkingPlace.ElementAt(random.Next(0, ParkingPlace.Count)).Key;
 		}
 
-		public void AddShips()
+		public void AddShip(Ship ship, int place)
 		{
-			for (int i = 0; i < AmountOfPlaces; i++)
-			{
-				int random = GetRandomParkingPlaceKey();
-				var ship = new Ship();
-				ParkingPlace.Add(random, ship);
-				Ships.Add(ship);
-			}
+			ParkingPlace.Add(place, ship);
+			Ships.Add(ship);
 		}
+
 
 		public int GetRandomParkingPlaceKey()
 		{
 			do
 			{
-				int random = Helpers.GetRandomInt(0, 11);
+				int random = Helpers.GetRandomInt(1, AmountOfPlaces + 1);
 				if (!ParkingPlace.ContainsKey(random))
 				{
 					return random;
@@ -67,12 +63,12 @@ namespace ContainerTransport.Models
 
 		}
 
-		public int[] GetDistances()
+		public List<int> GetDistances()
 		{
 			Distances = new List<int>(AmountOfPlaces - 1);
-			for (int i = 0; i < Distances.Length; i++)
+			for (int i = 0; i < AmountOfPlaces - 1; i++)
 			{
-				Distances[i] = Helpers.GetRandomInt(100, 451);
+				Distances.Add(Helpers.GetRandomInt(100, 451));
 			}
 			return Distances;
 		}
@@ -82,30 +78,54 @@ namespace ContainerTransport.Models
 		//1.vypsani všech kontejneru
 		//2. presouvani kontejneru
 		//3. vylodeni kontejneru
+		public void MovingContainersBetweenShips(IDNumber idContainer, string shipName)
+		{
+			if (CheckIfIdExist(idContainer))
+			{
+				throw new ArgumentOutOfRangeException(nameof(idContainer), "Does not exists");
+			}
+			if (CheckIfShipNameExist(shipName))
+			{
+				throw new ArgumentOutOfRangeException(nameof(shipName), "Does not exists");
+			}
+		
+	}
 		public void MoveContainerOnLand(IDNumber id)
 		{
-
 			if (CheckIfIdExist(id))
 			{
-
+				throw new ArgumentOutOfRangeException(nameof(id), "Does not exists");
 			}
-			else
+
+			var container = getContainer(id);
+			Dock.Add(container);
+		}
+
+		private Container getContainer(IDNumber id)
+		{
+			foreach (var ship in Ships)
 			{
-				Console.WriteLine("bandbs");
+				foreach (var container in ship.containersInside)
+				{
+					if (container.IdNumber.IdNumber.Equals(id))
+					{
+						ship.containersInside.Remove(container);
+						return container;
+					}
+						
+				}
 			}
+			return null;
+		}
 
+		private bool CheckIfShipNameExist(string name)
+		{
+			return Ship.NamesOfShips.Contains(name);
 		}
 
 		private bool CheckIfIdExist(IDNumber id)
 		{
-			foreach (var item in Ships)
-			{
-				foreach (var container in item.containersInside)
-				{
-					return Container.IDs.Contains(id);
-				}
-			}
-			return false;
+			return Container.IDs.Contains(id);
 		}
 
 		public void MoveContainer(IDNumber id, int to)
@@ -116,17 +136,36 @@ namespace ContainerTransport.Models
 			//Ships[to].AddContainer(Ships[from].containersInside[container]);
 		}
 
-		public void MovingContainerSleeping(int ship1, int ship2)
+		public int CalculateDistanceBetweenPlaces(int from, int to)
 		{
-			int sleeping = 0;
-			for (int i = ship1; i < ship2; i++)
+			if ((from < 1) || (from > Distances.Count))
+				throw new ArgumentOutOfRangeException(nameof(from), "must be bigger than 0 or smaller than 10");
+			if ((to < 1) || (to > Distances.Count))
+				throw new ArgumentOutOfRangeException(nameof(to), "must be bigger than 0 or smaller than 10");
+			if (from == to)
+				throw new ArgumentNullException(nameof(to), $"Can not be same as from: {from}");
+
+			from--;
+			to--;
+			int distance = 0;
+			if (from > to)
 			{
-				sleeping += Distances[i];
+				for (int i = from ; i >= to; i--)
+				{
+					distance += Distances[i];
+				}
+			}
+			else
+			{
+				for (int i = from ; i < to; i++)
+				{
+					distance += Distances[i];
+				}
 			}
 
-			Console.WriteLine($"This move will take {sleeping}ms");
-			Thread.Sleep(sleeping);
+			return distance;
 		}
+
 	}
 
 }

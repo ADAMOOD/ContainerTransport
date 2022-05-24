@@ -8,7 +8,7 @@ namespace ContainerTransport.Models
 
 	public class Ship
 	{
-
+		public static List<string> NamesOfShips = new List<string>();
 		public List<Container> containersInside { get; }
 		public string ShipName { get; set; }
 
@@ -28,8 +28,9 @@ namespace ContainerTransport.Models
 			{
 				stringChars[i] = chars[random.Next(chars.Length)];
 			}
-
-			return new String(stringChars);
+			var name = new String(stringChars);
+			NamesOfShips.Add(name);
+			return name;
 		}
 		public bool AddContainer(Container container)
 		{

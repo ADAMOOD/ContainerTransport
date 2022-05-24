@@ -17,14 +17,14 @@ namespace ContainerTransport
 			Console.SetCursorPosition((Console.WindowWidth - EnteringText.Length) / 2, Console.CursorTop);
 			Console.WriteLine(EnteringText);
 			AddBoxesIntoContainer(AmountOfBoxes, null);
-			var port = new Port(AmountOfShips);
-			port.AddShips();
+			var port = new Port(10);
+			AddShips(port);
 			Console.WriteLine("'1'->Print Containers Table\n'2'->Moving Containers Between Ships\n'3'->Land container\n'4'->Exit Application");
 			ContainersToRandomShipPlacement(port);
 			while (true)
 			{
 				char choice = Console.ReadKey().KeyChar;
-				Helpers.ClearCurrentConsoleLine(6);
+				Helpers.ClearCurrentConsoleLine(5);
 
 				Console.WriteLine();
 				switch (choice)
@@ -38,9 +38,11 @@ namespace ContainerTransport
 					case '2':
 						{
 							Console.WriteLine("Give me an ID of container");
-							string id = Console.ReadLine();
-							Console.WriteLine($"Give me name of Ship you wanna container {id} move into ");
+							string input = Console.ReadLine();
+							var id = new IDNumber(input);
+							Console.WriteLine($"Give me name of Ship you wanna container {id.IdNumber} move into ");
 							string shipName = Console.ReadLine();
+							port.MovingContainersBetweenShips(id,shipName);
 							break;
 						}
 					case '3':
@@ -62,6 +64,16 @@ namespace ContainerTransport
 
 		}
 
+		public static void AddShips(Port port)
+		{
+			for (int i = 0; i < AmountOfShips; i++)
+			{
+				int random = port.GetRandomParkingPlaceKey();
+				var ship = new Ship();
+				port.AddShip(ship,random);
+
+			}
+		}
 		public static void ContainersToRandomShipPlacement(Port port)
 		{
 			foreach (var container in Program.ListOfContainers)
