@@ -31,8 +31,8 @@ namespace ContainerTransport
 				{
 					case '1':
 						{
-							//CreateAdnPrintTableAboutContainers();
-								port.PrintInfoAboutContainers();
+							CreateAdnPrintTableAboutContainers();
+							port.PrintInfoAboutContainers();
 							break;
 						}
 					case '2':
@@ -45,6 +45,10 @@ namespace ContainerTransport
 						}
 					case '3':
 						{
+							Console.WriteLine("Give me an ID of container");
+							string input = Console.ReadLine();
+							var id = new IDNumber(input);
+							port.MoveContainerOnLand(id);
 							break;
 						}
 					case '4':
@@ -62,14 +66,11 @@ namespace ContainerTransport
 		{
 			foreach (var container in Program.ListOfContainers)
 			{
-				port.ParkingPlace[GetRandomShipKey(port)].containersInside.Add(container);
+				port.ParkingPlace[port.GetRandomShipKey()].containersInside.Add(container);
 			}
 		}
-		public static int GetRandomShipKey(Port port)
-		{
-			Random random = new Random();
-			return random.Next(port.ParkingPlace.Keys.Count);
-		}
+
+
 
 		private static void CreateAdnPrintTableAboutContainers()
 		{

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading;
 using BetterConsoleTables;
@@ -10,40 +11,41 @@ namespace ContainerTransport.Models
 	public class Port
 	{
 
-		public static int AmountOfShips { get; set; }
-		public int[] Distances { get; set; }
+		public static int AmountOfPlaces { get; set; }
+		public List<int> Distances { get; set; }
 		public List<Ship> Ships { get; }
 		public Dictionary<int, Ship> ParkingPlace { get; set; }
+		public List<Container> Dock { get; set; }
 
-		public Port(int amountOfShips)
+		public Port(int amountOfPlaces)
 		{
-			AmountOfShips = amountOfShips;
+			AmountOfPlaces = amountOfPlaces;
 			Ships = new List<Ship>();
 			Distances = GetDistances();
-			ParkingPlace = new Dictionary<int, Ship>();
+				ParkingPlace = new Dictionary<int, Ship>();
+			Dock = new List<Container>();
 		}
 		public void PrintInfoAboutContainers()
 		{
-			var ShipTable = new Table("Parking place", "Ship", "number of Containers");
+			var ShipTable = new Table("Parking place", "Ship", "Number of Containers");
 			ShipTable.Config = TableConfiguration.UnicodeAlt();
 			foreach (var item in ParkingPlace)
 			{
-				ShipTable.AddRow($"{item.Key}", $"{item.Value}", $"{item.Value.containersInside.Count}");
+				ShipTable.AddRow($"{item.Key}", $"{item.Value.ShipName}", $"{item.Value.containersInside.Count}");
 			}
 			Console.Write(ShipTable);
 
 		}
 
-		/*public static int GetRandomShipKey()
+		public int GetRandomShipKey()
 		{
 			Random random = new Random();
-			int key = random.Next()
+			return ParkingPlace.ElementAt(random.Next(0, ParkingPlace.Count)).Key;
 		}
-		*/
 
 		public void AddShips()
 		{
-			for (int i = 0; i < AmountOfShips; i++)
+			for (int i = 0; i < AmountOfPlaces; i++)
 			{
 				int random = GetRandomParkingPlaceKey();
 				var ship = new Ship();
@@ -51,26 +53,23 @@ namespace ContainerTransport.Models
 				Ships.Add(ship);
 			}
 		}
-		public static void ContainersToRandomShipPlacement(Port port)
-		{
-			foreach (var container in Program.ListOfContainers)
-			{
-				//port.ParkingPlace.Values
-			}
-		}
+
 		public int GetRandomParkingPlaceKey()
 		{
-			int random = Helpers.GetRandomInt(0, 11);
-			if (ParkingPlace.ContainsKey(random))
+			do
 			{
-				GetRandomParkingPlaceKey();
-			}
-			return random;
+				int random = Helpers.GetRandomInt(0, 11);
+				if (!ParkingPlace.ContainsKey(random))
+				{
+					return random;
+				}
+			} while (true);
+
 		}
 
 		public int[] GetDistances()
 		{
-			Distances = new int[AmountOfShips - 1];
+			Distances = new List<int>(AmountOfPlaces - 1);
 			for (int i = 0; i < Distances.Length; i++)
 			{
 				Distances[i] = Helpers.GetRandomInt(100, 451);
@@ -83,10 +82,36 @@ namespace ContainerTransport.Models
 		//1.vypsani všech kontejneru
 		//2. presouvani kontejneru
 		//3. vylodeni kontejneru
-		public void MoveContainer(IDNumber id, int from, int to)
+		public void MoveContainerOnLand(IDNumber id)
 		{
-			Console.WriteLine($"Moving container {id.IdNumber} from ship {from} to ship {to}");
-			MovingContainerSleeping(from, to);
+
+			if (CheckIfIdExist(id))
+			{
+
+			}
+			else
+			{
+				Console.WriteLine("bandbs");
+			}
+
+		}
+
+		private bool CheckIfIdExist(IDNumber id)
+		{
+			foreach (var item in Ships)
+			{
+				foreach (var container in item.containersInside)
+				{
+					return Container.IDs.Contains(id);
+				}
+			}
+			return false;
+		}
+
+		public void MoveContainer(IDNumber id, int to)
+		{
+			//Console.WriteLine($"Moving container {id.IdNumber} from ship {from} to ship {to}");
+			//	MovingContainerSleeping(from, to);
 			//	Ships[from].containersInside.Remove(Ships[from].containersInside[id.IdNumber]);
 			//Ships[to].AddContainer(Ships[from].containersInside[container]);
 		}

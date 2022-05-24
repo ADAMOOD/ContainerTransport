@@ -7,7 +7,7 @@ namespace ContainerTransport.Models
 {
 	public  class Container : BaseObject
 	{
-		List<IDNumber> IDs = new List<IDNumber>();
+		public static List<IDNumber> IDs = new List<IDNumber>();
 		private List<Box> ContainedBoxes { get; set; }
 		public float AvailableVolume { get; protected set; }
 		public IDNumber IdNumber { get; }
@@ -18,6 +18,7 @@ namespace ContainerTransport.Models
 			ContainedBoxes = new List<Box>();
 			AvailableVolume = Volume;
 			IdNumber = GetIdNumber(null);
+			
 		}
 
 		public IDNumber GetIdNumber(IDNumber id)
@@ -36,6 +37,10 @@ namespace ContainerTransport.Models
 
 		private bool CheckIfIdExists(IDNumber id)
 		{
+			if (IDs.Count == null)
+			{
+				return false;
+			}
 			return (IDs.Contains(id));
 		}
 
