@@ -8,7 +8,7 @@ namespace ContainerTransport.Models
 		public int FirstNumber { get; set; }
 		public int SecondNumber { get; set; }
 		public int ThirdNumber { get; set; }
-		public string IdNumber { get; protected set; }
+		public string IdNumber { get;  }
 
 		public IDNumber()
 		{

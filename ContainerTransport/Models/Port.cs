@@ -14,7 +14,7 @@ namespace ContainerTransport.Models
 
 		public static int AmountOfPlaces { get; set; }
 		public List<int> Distances { get; set; }
-		public List<Ship> Ships { get; }
+		public static List<Ship> Ships { get; set; }
 		public Dictionary<int, Ship> ParkingPlace { get; set; }
 		public List<Container> Dock { get; set; }
 
@@ -86,22 +86,23 @@ namespace ContainerTransport.Models
 			return Distances;
 		}
 
-		public void MovingContainersBetweenShips(IDNumber idContainer, string shipName)
+		public string MovingContainersBetweenShips(IDNumber idContainer, string shipName)
 		{
-			if (CheckIfIdExist(idContainer))
-			{
+			if (!CheckIfIdExist(idContainer))
 				throw new ArgumentOutOfRangeException(nameof(idContainer), "Does not exists");
-			}
+			
 			if (!CheckIfShipNameExist(shipName))
-			{
 				throw new ArgumentOutOfRangeException(nameof(shipName), "Does not exists");
-			}
+			
 			var container = findContainer(idContainer);
 			var ship = FindShip(shipName);
 			var OriginalShip = FindShipUsingContainer(container);
+			if (ship.ShipName.Equals(OriginalShip.ShipName))
+				return $"Same ship";
 			OriginalShip.containersInside.Remove(container);
 			ship.AddContainer(container);
-
+			return
+				$"Container {idContainer.IdNumber} has been successfully moved form ship {OriginalShip.ShipName} to ship {ship.ShipName}";
 		}
 		public Ship FindShipUsingContainer(Container container)
 		{
@@ -109,7 +110,7 @@ namespace ContainerTransport.Models
 			{
 				foreach (var con in ship.containersInside)
 				{
-					if (con.Equals(container))
+					if (con.Id.IdNumber.Equals(container.Id.IdNumber))
 						return ship;
 				}
 			}
@@ -117,7 +118,7 @@ namespace ContainerTransport.Models
 		}
 		public string MoveContainerOnLand(IDNumber id)
 		{
-			if (CheckIfIdExist(id))//nejak nefunguje
+			if (!CheckIfIdExist(id))
 			{
 				throw new ArgumentOutOfRangeException(nameof(id), "Does not exists");
 			}
@@ -127,7 +128,7 @@ namespace ContainerTransport.Models
 				return "chyba";
 			container.Status = status.dock;
 			Dock.Add(container);
-			return $"{container.Id.IdNumber} has been succesfuly moved to Dock";
+			return $"{container.Id.IdNumber} has been successfully moved to Dock";
 		}
 
 		public Ship FindShip(string name)
@@ -149,7 +150,6 @@ namespace ContainerTransport.Models
 
 					if (container.Id.IdNumber.Equals(id.IdNumber))
 					{
-						ship.containersInside.Remove(container);
 						return container;
 					}
 				}
@@ -164,7 +164,12 @@ namespace ContainerTransport.Models
 
 		private bool CheckIfIdExist(IDNumber id)
 		{
-			return Container.IDs.Contains(id);
+			foreach (var ID in Container.IDs)
+			{
+				if (ID.IdNumber.Equals(id.IdNumber))
+					return true;
+			}
+			return false;
 		}
 
 		public int CalculateDistanceBetweenPlaces(int from, int to)

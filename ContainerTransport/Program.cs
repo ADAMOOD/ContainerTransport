@@ -50,7 +50,7 @@ namespace ContainerTransport
 							var id = new IDNumber(input);
 							Console.WriteLine($"Give me name of Ship you wanna container {id.IdNumber} move into ");
 							string shipName = Console.ReadLine();
-							port.MovingContainersBetweenShips(id, shipName);
+							Console.WriteLine(port.MovingContainersBetweenShips(id, shipName));
 							break;
 						}
 					case '3':
