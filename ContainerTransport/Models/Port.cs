@@ -99,10 +99,11 @@ namespace ContainerTransport.Models
 			var OriginalShip = FindShipUsingContainerId(container.Id.IdNumber);
 			if (ship.ShipName.Equals(OriginalShip.ShipName))
 				return $"Same ship";
+			var time = CalculateDistanceBetweenPlaces(FindPlaceByShipName(OriginalShip.ShipName),FindPlaceByShipName(ship.ShipName));//important!!!
 			OriginalShip.containersInside.Remove(container);
 			ship.AddContainer(container);
 			return
-				$"Container {idContainer.IdNumber} has been successfully moved form ship {OriginalShip.ShipName} to ship {ship.ShipName}";
+				$"Container {idContainer.IdNumber} has been successfully moved form ship {OriginalShip.ShipName} to ship {ship.ShipName} (this move lasted {time} ms)";
 		}
 		public Ship FindShipUsingContainerId(string id)
 		{
@@ -115,6 +116,17 @@ namespace ContainerTransport.Models
 				}
 			}
 			return null;
+		}
+
+		public int FindPlaceByShipName(string name)
+		{
+			foreach (var place in ParkingPlace)
+			{
+				if(place.Value.ShipName.Equals(name))
+					return place.Key;
+			}
+
+			return 0;
 		}
 		public string MoveContainerOnLand(IDNumber id)
 		{
