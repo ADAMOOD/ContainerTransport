@@ -90,13 +90,13 @@ namespace ContainerTransport.Models
 		{
 			if (!CheckIfIdExist(idContainer))
 				throw new ArgumentOutOfRangeException(nameof(idContainer), "Does not exists");
-			
+
 			if (!CheckIfShipNameExist(shipName))
 				throw new ArgumentOutOfRangeException(nameof(shipName), "Does not exists");
-			
+
 			var container = findContainer(idContainer);
 			var ship = FindShip(shipName);
-			var OriginalShip = FindShipUsingContainer(container);
+			var OriginalShip = FindShipUsingContainerId(container.Id.IdNumber);
 			if (ship.ShipName.Equals(OriginalShip.ShipName))
 				return $"Same ship";
 			OriginalShip.containersInside.Remove(container);
@@ -104,13 +104,13 @@ namespace ContainerTransport.Models
 			return
 				$"Container {idContainer.IdNumber} has been successfully moved form ship {OriginalShip.ShipName} to ship {ship.ShipName}";
 		}
-		public Ship FindShipUsingContainer(Container container)
+		public Ship FindShipUsingContainerId(string id)
 		{
 			foreach (var ship in Ships)
 			{
 				foreach (var con in ship.containersInside)
 				{
-					if (con.Id.IdNumber.Equals(container.Id.IdNumber))
+					if (con.Id.IdNumber.Equals(id))
 						return ship;
 				}
 			}
@@ -124,8 +124,10 @@ namespace ContainerTransport.Models
 			}
 
 			var container = findContainer(id);
+			var OriginalShip = FindShipUsingContainerId(id.IdNumber);
 			if (container == null)
 				return "chyba";
+			OriginalShip.containersInside.Remove(container);//Important !!!!!!!!!!!
 			container.Status = status.dock;
 			Dock.Add(container);
 			return $"{container.Id.IdNumber} has been successfully moved to Dock";

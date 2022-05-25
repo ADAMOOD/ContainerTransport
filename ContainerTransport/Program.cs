@@ -32,7 +32,7 @@ namespace ContainerTransport
 					case '1':
 						{
 							Console.ForegroundColor = ConsoleColor.Green;
-							Console.WriteLine("Containers:");
+							Console.WriteLine("Containers on ships:");
 							CreateAdnPrintTableAboutContainers();
 							Console.ForegroundColor = ConsoleColor.Red;
 							Console.WriteLine("Ships:");
@@ -97,14 +97,17 @@ namespace ContainerTransport
 			
 			var table = new Table("index", "Generated Id", "Container Guid", "Number Of Boxes", "Boxes Weighs", "Status");
 			table.Config = TableConfiguration.UnicodeAlt();
-
 			int i = 1;
-			foreach (var con in ListOfContainers)
+			foreach (var ship in Port.Ships)
 			{
-				table.AddRow($"{i}", $"{con.Id.IdNumber}", $"{con.Guid}", $"{con.GetContent().Count}",
-					$"{con.Weight} kg", $"{con.Status}");
-				i++;
+				foreach (var con in ship.containersInside)
+				{
+					table.AddRow($"{i}", $"{con.Id.IdNumber}", $"{con.Guid}", $"{con.GetContent().Count}",
+						$"{con.Weight} kg", $"{con.Status}({ship.ShipName})");
+					i++;
+				}
 			}
+			
 			Console.Write(table.ToString());
 			
 		}
